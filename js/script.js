@@ -2,22 +2,20 @@
 //   const links = document.querySelectorAll(".titles a");
 //   console.log(links);
 // });
-const titleClickhandler = (e) => {
+const titleClickhandler = function (e) {
+  e.preventDefault();
+  const clickeElement = this;
+  const activeLinks = document.querySelectorAll(".titles a.active");
+  const activeArticles = document.querySelectorAll(".post");
   const removeActiveClass = (htmlElements) =>
     htmlElements.forEach((element) => element.classList.remove("active"));
-  /* remove class 'active' from all article links  */
-  const activeLinks = document.querySelectorAll(".titles a.active");
+
   removeActiveClass(activeLinks);
-  /* add class 'active' to the clicked link */
-
-  /* remove class 'active' from all articles */
-  const activeArticles = document.querySelectorAll(".post");
   removeActiveClass(activeArticles);
-  /* get 'href' attribute from the clicked link */
-
-  /* find the correct article using the selector (value of 'href' attribute) */
-
-  /* add class 'active' to the correct article */
+  clickeElement.classList.add("active");
+  document
+    .querySelector(clickeElement.getAttribute("href"))
+    .classList.add("active");
 };
 const links = document.querySelectorAll(".titles a");
 links.forEach((link) => link.addEventListener("click", titleClickhandler));
