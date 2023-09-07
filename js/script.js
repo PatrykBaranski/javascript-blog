@@ -1,10 +1,7 @@
-// document.querySelector("#test-button").addEventListener("click", () => {
-//   const links = document.querySelectorAll(".titles a");
-//   console.log(links);
-// });
+"use strict";
 const titleClickhandler = function (e) {
   e.preventDefault();
-  const clickeElement = this;
+  const clickedElement = this;
   const activeLinks = document.querySelectorAll(".titles a.active");
   const activeArticles = document.querySelectorAll(".post");
   const removeActiveClass = (htmlElements) =>
@@ -12,9 +9,9 @@ const titleClickhandler = function (e) {
 
   removeActiveClass(activeLinks);
   removeActiveClass(activeArticles);
-  clickeElement.classList.add("active");
+  clickedElement.classList.add("active");
   document
-    .querySelector(clickeElement.getAttribute("href"))
+    .querySelector(clickedElement.getAttribute("href"))
     .classList.add("active");
 };
 const links = document.querySelectorAll(".titles a");
