@@ -1,4 +1,5 @@
 "use strict";
+const articles = document.querySelectorAll(".post");
 const titleClickhandler = function (e) {
   e.preventDefault();
   const clickedElement = this;
@@ -15,7 +16,6 @@ const titleClickhandler = function (e) {
     .classList.add("active");
 };
 const generateTitleLinks = function () {
-  const articles = document.querySelectorAll(".post");
   const linkList = document.querySelector(".titles");
   linkList.innerHTML = "";
   articles.forEach((article, i) => {
@@ -29,5 +29,16 @@ const generateTitleLinks = function () {
   const links = document.querySelectorAll(".titles a");
   links.forEach((link) => link.addEventListener("click", titleClickhandler));
 };
-
+const generateTags = function () {
+  articles.forEach((article) => {
+    const postTags = article.querySelector(".post-tags .list");
+    postTags.innerHTML = "";
+    const tagList = article.getAttribute("data-tags").split(" ");
+    tagList.forEach((tag) => {
+      console.log(tag);
+      postTags.innerHTML += `<li><a href="#">${tag}</a></li> `;
+    });
+  });
+};
 generateTitleLinks();
+generateTags();
