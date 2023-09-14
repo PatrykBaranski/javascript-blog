@@ -22,7 +22,6 @@ const tagClickHandler = function (e) {
   const href = this.getAttribute("href");
   const tag = href.slice(5);
   const activeTags = document.querySelectorAll(".post-tags .list .active");
-  console.log(activeTags);
   removeActiveClass(activeTags);
   document.querySelectorAll(".post-tags .list a").forEach((tag) => {
     if (tag.getAttribute("href") === href) tag.classList.add("active");
@@ -30,7 +29,9 @@ const tagClickHandler = function (e) {
   generateTitleLinks(`[data-tags~=${tag}]`);
 };
 
-const generateTitleLinks = function () {
+const generateTitleLinks = function (customSelector = "") {
+  const articles = document.querySelectorAll(`.post${customSelector}`);
+  console.log(articles);
   const linkList = document.querySelector(".titles");
   linkList.innerHTML = "";
   articles.forEach((article, i) => {
