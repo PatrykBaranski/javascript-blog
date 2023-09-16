@@ -16,6 +16,23 @@ const titleClickHandler = function (e) {
     .querySelector(clickedElement.getAttribute("href"))
     .classList.add("active");
 };
+const addClickHandler = (element, callbackFunction) =>
+  document
+    .querySelectorAll(element)
+    .forEach((tag) => tag.addEventListener("click", callbackFunction));
+
+const authorClickHandler = function (e) {
+  e.preventDefault();
+  const href = this.getAttribute("href");
+  const author = href.slice(8);
+  const actvieAuthors = document.querySelectorAll(".post-author a.active");
+  removeActiveClass(actvieAuthors);
+  document.querySelectorAll(".post-author a").forEach((author) => {
+    console.log(author);
+    if (author.getAttribute("href") === href) author.classList.add("active");
+  });
+  generateTitleLinks(`[data-author="${author}"]`);
+};
 
 const tagClickHandler = function (e) {
   e.preventDefault();
@@ -30,21 +47,23 @@ const tagClickHandler = function (e) {
 };
 
 const generateTitleLinks = function (customSelector = "") {
+  console.log(customSelector);
   const articles = document.querySelectorAll(`.post${customSelector}`);
-  console.log(articles);
   const linkList = document.querySelector(".titles");
   linkList.innerHTML = "";
-  articles.forEach((article, i) => {
+  articles.forEach((article) => {
     const articleTitle = article.querySelector(".post-title").innerHTML;
-    linkList.innerHTML += `<li>
-                <a href="#${article.getAttribute(
-                  "id",
-                )}"><span>${articleTitle}</span></a>
-              </li>`;
+    linkList.innerHTML += `
+            <li>
+                <a href="#${article.getAttribute("id")}">
+                    <span>${articleTitle}</span>
+                </a>
+            </li>`;
   });
   const links = document.querySelectorAll(".titles a");
   links.forEach((link) => link.addEventListener("click", titleClickHandler));
 };
+
 const generateTags = function () {
   articles.forEach((article) => {
     const postTags = article.querySelector(".post-tags .list");
@@ -52,16 +71,22 @@ const generateTags = function () {
     const tagList = article.getAttribute("data-tags").split(" ");
     tagList.forEach(
       (tag) =>
-        (postTags.innerHTML += `<li><a href="#tag-${tag}">${tag}</a></li> `),
+        (postTags.innerHTML += `<li><a href="#tag-${tag}">${tag}</a></li> `)
     );
     ``;
   });
 };
-const addClickListenersToTags = function () {
-  document
-    .querySelectorAll(".post-tags .list a")
-    .forEach((tag) => tag.addEventListener("click", tagClickHandler));
+
+const generateAuthor = function () {
+  articles.forEach((article) => {
+    const author = article.getAttribute("data-author");
+    const authorTag = article.querySelector(".post-author");
+    authorTag.innerHTML = `by <a href="#author-${author}">${author}</a>`;
+  });
 };
+
 generateTitleLinks();
 generateTags();
-addClickListenersToTags();
+generateAuthor();
+addClickHandler(".post-tags .list a", tagClickHandler);
+addClickHandler(".post-author a", authorClickHandler);
