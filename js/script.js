@@ -10,22 +10,18 @@ const getTitleFromHref = (href) => {
 };
 
 const calculateTagsParams = (tags) => {
-  const tagValues = [];
-
-  for (const tag in tags) {
-    tagValues.push(tags[tag]);
-  }
-  tagValues.sort((a, b) => a - b);
-
-  return { min: tagValues[0], max: tagValues[tagValues.length - 1] };
+  return {
+    min: Math.max(...Object.values(tags)),
+    max: Math.min(...Object.values(tags)),
+  };
 };
 
-const calculateTagClass = (reaperanceOfTag, tagParams) => {
-  const tagsCount = 5;
+const calculateTagClass = (reappearanceOfTag, tagParams) => {
+  const maxTagsCount = 5;
 
   return `tag-size-${Math.floor(
-    ((reaperanceOfTag - tagParams.min) / (tagParams.max - tagParams.min)) *
-      (tagsCount - 1) +
+    ((reappearanceOfTag - tagParams.min) / (tagParams.max - tagParams.min)) *
+      (maxTagsCount - 1) +
       1
   )}`;
 };
@@ -36,11 +32,11 @@ const generateSideBarHTML = (allElement, selector, type) => {
   const elementParams = calculateTagsParams(allElement);
 
   for (const info in allElement) {
-    const reaperanceOfElement = allElement[info];
+    const reappearanceOfElement = allElement[info];
     allElementHTML += `<li class=${calculateTagClass(
-      reaperanceOfElement,
+      reappearanceOfElement,
       elementParams
-    )}><a href="#${type}-${info}">${info}</a> <span>(${reaperanceOfElement})</span></li>`;
+    )}><a href="#${type}-${info}">${info}</a> <span>(${reappearanceOfElement})</span></li>`;
   }
 
   elementSideBar.innerHTML = allElementHTML;
@@ -72,9 +68,9 @@ const authorClickHandler = function (e) {
 
   const href = this.getAttribute("href");
   const author = getTitleFromHref(href);
-  const actvieAuthors = document.querySelectorAll(".post-author a.active");
+  const activeAuthors = document.querySelectorAll(".post-author a.active");
 
-  removeActiveClass(actvieAuthors);
+  removeActiveClass(activeAuthors);
   document.querySelectorAll(".post-author a").forEach((author) => {
     if (author.getAttribute("href") === href) author.classList.add("active");
   });
@@ -135,17 +131,17 @@ const generateTags = function () {
 };
 
 const generateAuthor = function () {
-  const allAuthorts = {};
+  const allAuthors = {};
 
   articles.forEach((article) => {
     const author = article.getAttribute("data-author");
-    if (!allAuthorts[author]) allAuthorts[author] = 1;
-    allAuthorts[author]++;
+    if (!allAuthors[author]) allAuthors[author] = 1;
+    allAuthors[author]++;
     const authorTag = article.querySelector(".post-author");
     authorTag.innerHTML = `by <a href="#author-${author}">${author}</a>`;
   });
 
-  generateSideBarHTML(allAuthorts, ".list.authors", "author");
+  generateSideBarHTML(allAuthors, ".list.authors", "author");
 };
 
 generateTitleLinks();
