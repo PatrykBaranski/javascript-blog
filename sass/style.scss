@@ -121,3 +121,26 @@ body {
     margin: 0 10px 0 0;
   }
 }
+/*tag sizes*/
+.list.tags {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.tag-size-5 {
+  font-size: 48px;
+}
+.tag-size-4 {
+  font-size: 32px;
+}
+.tag-size-3 {
+  font-size: 24px;
+}
+.tag-size-2 {
+  font-size: 16px;
+}
+.tag-size-1 {
+  font-size: 12px;
+}
