@@ -1,5 +1,16 @@
 "use strict";
 const articles = document.querySelectorAll(".post");
+const templates = {
+  articleLink: Handlebars.compile(
+    document.querySelector("#template-article-link").innerHTML
+  ),
+  articleAuthor: Handlebars.compile(
+    document.querySelector("#template-article-author").innerHTML
+  ),
+  tagCloudLink: Handlebars.compile(
+    document.querySelector("#template-cloud-link").innerHTML
+  ),
+};
 
 const removeActiveClass = (htmlElements) =>
   htmlElements.forEach((element) => element.classList.remove("active"));
@@ -11,8 +22,8 @@ const getTitleFromHref = (href) => {
 
 const calculateTagsParams = (tags) => {
   return {
-    min: Math.max(...Object.values(tags)),
-    max: Math.min(...Object.values(tags)),
+    max: Math.max(...Object.values(tags)),
+    min: Math.min(...Object.values(tags)),
   };
 };
 
@@ -28,18 +39,21 @@ const calculateTagClass = (reappearanceOfTag, tagParams) => {
 
 const generateSideBarHTML = (allElement, selector, type) => {
   const elementSideBar = document.querySelector(selector);
-  let allElementHTML = "";
+  const allElementHTML = { elements: [] };
   const elementParams = calculateTagsParams(allElement);
 
   for (const info in allElement) {
     const reappearanceOfElement = allElement[info];
-    allElementHTML += `<li class=${calculateTagClass(
+
+    allElementHTML.elements.push({
+      link: `${type}-${info}`,
+      info,
       reappearanceOfElement,
-      elementParams
-    )}><a href="#${type}-${info}">${info}</a> <span>(${reappearanceOfElement})</span></li>`;
+      class: calculateTagClass(reappearanceOfElement, elementParams),
+    });
   }
 
-  elementSideBar.innerHTML = allElementHTML;
+  elementSideBar.innerHTML = templates.tagCloudLink(allElementHTML);
 };
 
 const titleClickHandler = function (e) {
@@ -100,12 +114,12 @@ const generateTitleLinks = function (customSelector = "") {
   linkList.innerHTML = "";
   articles.forEach((article) => {
     const articleTitle = article.querySelector(".post-title").innerHTML;
-    linkList.innerHTML += `
-            <li>
-                <a href="#${article.getAttribute("id")}">
-                    <span>${articleTitle}</span>
-                </a>
-            </li>`;
+    const linkHTMLData = {
+      id: article.getAttribute("id"),
+      title: articleTitle,
+    };
+
+    linkList.innerHTML += templates.articleLink(linkHTMLData);
   });
 
   const links = document.querySelectorAll(".titles a");
@@ -122,7 +136,11 @@ const generateTags = function () {
     tagList.forEach((tag) => {
       if (!allTags[tag]) allTags[tag] = 1;
       allTags[tag]++;
-      const linkEl = `<li><a href="#tag-${tag}">${tag}</a></li> `;
+      const linkHTMLData = {
+        id: `tag-${tag}`,
+        title: tag,
+      };
+      const linkEl = templates.articleLink(linkHTMLData);
       postTags.innerHTML += linkEl;
     });
   });
@@ -138,7 +156,8 @@ const generateAuthor = function () {
     if (!allAuthors[author]) allAuthors[author] = 1;
     allAuthors[author]++;
     const authorTag = article.querySelector(".post-author");
-    authorTag.innerHTML = `by <a href="#author-${author}">${author}</a>`;
+    const authorHTMLData = { author };
+    authorTag.innerHTML = templates.articleAuthor(authorHTMLData);
   });
 
   generateSideBarHTML(allAuthors, ".list.authors", "author");
